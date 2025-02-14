@@ -14,5 +14,24 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
+})->middleware('guest');
+
+Route::get('/login', function () {
+    return view('auth.login', [
+        'title' => 'Login',
+    ]);
+})->name('login')->middleware('guest');
+
+Route::get('/register', function () {
+    return view('auth.register', [
+        'title' => 'Login',
+    ]);
+})->name('login')->middleware('guest');
+
+Route::middleware('auth:sanctum')->get('/dashboard', function (Request $request) {
+    return view('index', [
+        'title' => 'Dashboard',
+        'active' => 'dashboard'
+    ]);
 });

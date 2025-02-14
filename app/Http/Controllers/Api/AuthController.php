@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -53,8 +54,18 @@ class AuthController extends Controller
     public function Login(Request $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+
             $auth = Auth::user();
-            $success['token'] =  $auth->createToken('auth_token')->plainTextToken;
+            $token = $auth->createToken('auth_token')->plainTextToken;
+
+            session([
+                'name' => $auth->name,
+                'email' => $auth->email,
+                'level' => $auth->level,
+                'tkn' => $token
+            ]);
+
+            $success['token'] =  $token;
             $success['name'] =  $auth->name;
 
             return response()->json([
@@ -72,7 +83,12 @@ class AuthController extends Controller
 
     public function Logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $tokenId = Str::before(request()->bearerToken(), '|');
+        auth()->user()->tokens()->where('id', $tokenId)->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return response()->json([
             'success' => true,
             'message' => 'Logout Berhasil',
