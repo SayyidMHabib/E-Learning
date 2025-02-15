@@ -29,9 +29,18 @@ Route::get('/register', function () {
     ]);
 })->name('register')->middleware('guest');
 
-Route::middleware('auth:sanctum', 'update.last_used')->get('/dashboard', function (Request $request) {
-    return view('index', [
-        'title' => 'Dashboard',
-        'active' => 'dashboard'
-    ]);
+Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
+    Route::get('/dashboard', function (Request $request) {
+        return view('index', [
+            'title' => 'Dashboard',
+            'active' => 'dashboard'
+        ]);
+    });
+
+    Route::get('/courses', function (Request $request) {
+        return view('courses', [
+            'title' => 'Mata Kuliah',
+            'active' => 'courses'
+        ]);
+    });
 });

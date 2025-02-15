@@ -32,7 +32,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $input = $request->all();
+        $input = $validator->validated();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
 
@@ -62,6 +62,7 @@ class AuthController extends Controller
             $encryptedToken = Crypt::encrypt($token);
 
             session([
+                'id' => $auth->id,
                 'name' => $auth->name,
                 'email' => $auth->email,
                 'level' => $auth->level,

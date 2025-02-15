@@ -34,7 +34,7 @@
                                                 value="" placeholder="Enter your email" aria-describedby="emailHelp"
                                                 autocomplete="off" required>
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="mb-3" style="position: relative;">
                                             <label for="password" class="form-label">Password <span
                                                     class="text-danger">*</span></label>
                                             <input type="password" class="form-control w-100" id="password" name="password"

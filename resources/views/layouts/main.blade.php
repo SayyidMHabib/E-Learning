@@ -105,6 +105,10 @@
             color: #444;
             line-height: 32px;
         }
+
+        thead th {
+            text-align: center;
+        }
     </style>
 
 </head>
@@ -213,10 +217,17 @@
                     <ul class="metismenu list-unstyled" id="side-menu">
                         <li class="menu-title">Menu</li>
                         <li class="{{ $active == 'dashboard' ? 'mm-active' : '' }}">
-                            <a href=""
+                            <a href="{{ url('/dashboard') }}"
                                 class="waves-effect menu-link {{ $active == 'dashboard' ? 'active' : '' }}">
                                 <div class="d-inline-block icons-sm mr-1"><i class="fa fa-home"></i></div>
                                 <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="{{ $active == 'courses' ? 'mm-active' : '' }}">
+                            <a href="{{ url('/courses') }}"
+                                class="waves-effect menu-link {{ $active == 'courses' ? 'active' : '' }}">
+                                <div class="d-inline-block icons-sm mr-1"><i class="fas fa-list-ul"></i></div>
+                                <span>Mata Kuliah</span>
                             </a>
                         </li>
                     </ul>
@@ -229,7 +240,21 @@
         <!-- ============================================================== -->
         <!-- Start right Content here -->
         <!-- ============================================================== -->
-        @yield('content')
+        <div class="main-content">
+            <div id="content">
+                @yield('content')
+
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>E-Learning</strong> &copy; <?= date('Y') ?> . All Right Reserved
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
         <!-- end main content-->
 
     </div>
@@ -239,7 +264,9 @@
     <div class="rightbar-overlay"></div>
 
     <!-- JAVASCRIPT -->
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.js"
         integrity="sha512-L7jgg7T9UbYc7hXogUKssqe1B5MsgrcviNxsRbO53dDSiw/JxuA/4kVQvEORmZJ6Re3fVF3byN5TT7czo9Rdug=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -298,11 +325,18 @@
 
     <script src="{{ asset('plugins/toastr/toastr.min.js') }}"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.all.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $(".alert-message").delay(2500).slideUp('slow');
         });
 
+        $('input, select, textarea').on('input change', function() {
+            let fieldName = $(this).attr('name');
+            $('.error-' + fieldName).text('');
+        });
 
         $("#btn_logout").on('click', function(e) {
             e.preventDefault();
