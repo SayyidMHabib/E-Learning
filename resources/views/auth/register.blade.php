@@ -63,7 +63,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="evel" class="form-label">Level <span
+                                            <label for="level" class="form-label">Level <span
                                                     class="text-danger">*</span></label>
                                             <select class="form-control select2" name="level" id="level" required>
                                                 <option value="" disabled selected>Pilih Level User</option>

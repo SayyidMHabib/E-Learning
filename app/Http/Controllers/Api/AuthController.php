@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Carbon;
 
 class AuthController extends Controller
 {
@@ -15,14 +17,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                'unique:users,email',
-                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
-            ],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
             'password' => ['required', 'string', 'min:8'],
             'confirm_password' => ['required', 'string', 'min:8', 'same:password'],
             'level' => ['required', 'integer'],
@@ -58,14 +53,22 @@ class AuthController extends Controller
             $auth = Auth::user();
             $token = $auth->createToken('auth_token')->plainTextToken;
 
+            $exp_token = Carbon::now()->addHours(1);
+
+            $auth->tokens()->latest()->first()->update([
+                'expires_at' => $exp_token,
+            ]);
+
+            $encryptedToken = Crypt::encrypt($token);
+
             session([
                 'name' => $auth->name,
                 'email' => $auth->email,
                 'level' => $auth->level,
-                'tkn' => $token
+                'tkn' => $encryptedToken
             ]);
 
-            $success['token'] =  $token;
+            // $success['token'] =  $encryptedToken;
             $success['name'] =  $auth->name;
 
             return response()->json([
@@ -83,7 +86,9 @@ class AuthController extends Controller
 
     public function Logout(Request $request)
     {
-        $tokenId = Str::before(request()->bearerToken(), '|');
+        $encryptedToken = $request->bearerToken();
+        $decryptedToken = Crypt::decrypt($encryptedToken);
+        $tokenId = Str::before($decryptedToken, '|');
         auth()->user()->tokens()->where('id', $tokenId)->delete();
 
         $request->session()->invalidate();

@@ -20,6 +20,11 @@
                                         <h4>Welcome to E-Learning</h4>
                                         <h6>Please enter your email and password</h6>
                                     </div>
+                                    @if (session('tkn_exp'))
+                                        <div class="alert alert-danger alert-message" role="alert">
+                                            {{ session('tkn_exp') }}
+                                        </div>
+                                    @endif
                                     <form class="form_login" id="form_login">
                                         @csrf
                                         <div class="mb-3">

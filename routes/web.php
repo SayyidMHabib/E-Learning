@@ -27,9 +27,9 @@ Route::get('/register', function () {
     return view('auth.register', [
         'title' => 'Login',
     ]);
-})->name('login')->middleware('guest');
+})->name('register')->middleware('guest');
 
-Route::middleware('auth:sanctum')->get('/dashboard', function (Request $request) {
+Route::middleware('auth:sanctum', 'update.last_used')->get('/dashboard', function (Request $request) {
     return view('index', [
         'title' => 'Dashboard',
         'active' => 'dashboard'
