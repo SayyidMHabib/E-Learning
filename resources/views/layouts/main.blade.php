@@ -13,7 +13,10 @@
     <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
 
     <!-- datepicker -->
-    <link href="{{ asset('libs/air-datepicker/css/datepicker.min.css') }}" rel="stylesheet" type="text/css" />
+    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+        rel="stylesheet" /> --}}
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 
     <!-- jvectormap -->
     <link href="{{ asset('libs/jqvmap/jqvmap.min.css') }}" rel="stylesheet" />
@@ -42,8 +45,6 @@
 
     <!-- Import Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.css" />
 
@@ -230,9 +231,17 @@
                             <li class="{{ $active == 'materials' ? 'mm-active' : '' }}">
                                 <a href="{{ url('/materials') }}"
                                     class="waves-effect menu-link {{ $active == 'materials' ? 'active' : '' }}">
-                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-file-invoice"></i>
+                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-book"></i>
                                     </div>
                                     <span>Materi Kuliah</span>
+                                </a>
+                            </li>
+                            <li class="{{ $active == 'assignments' ? 'mm-active' : '' }}">
+                                <a href="{{ url('/assignments') }}"
+                                    class="waves-effect menu-link {{ $active == 'assignments' ? 'active' : '' }}">
+                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-file-signature"></i>
+                                    </div>
+                                    <span>Tugas Mata Kuliah</span>
                                 </a>
                             </li>
                         @elseif (session('level') == 2)
@@ -247,7 +256,7 @@
                             <li class="{{ $active == 'material_students' ? 'mm-active' : '' }}">
                                 <a href="{{ url('/material_students') }}"
                                     class="waves-effect menu-link {{ $active == 'material_students' ? 'active' : '' }}">
-                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-file-invoice"></i>
+                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-book"></i>
                                     </div>
                                     <span>Materi Kuliah</span>
                                 </a>
@@ -304,9 +313,9 @@
     <script src="https://unicons.iconscout.com/release/v2.0.1/script/monochrome/bundle.js"></script>
 
     <!-- datepicker -->
-    <script src="{{ asset('libs/air-datepicker/js/datepicker.min.js') }}"></script>
-    <script src="{{ asset('libs/air-datepicker/js/i18n/datepicker.en.js') }}"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script> --}}
 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script> -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -361,6 +370,14 @@
         $(document).ready(function() {
             $('.select2').select2();
             $(".alert-message").delay(2500).slideUp('slow');
+
+            $(document).on('focus', '.date', function() {
+                $(this).daterangepicker({
+                    showDropdowns: true,
+                    singleDatePicker: true,
+                    autoApply: true,
+                });
+            });
         });
 
         $('input, select, textarea').on('input change', function() {

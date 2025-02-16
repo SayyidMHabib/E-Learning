@@ -28,7 +28,6 @@ class CoursesController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,

@@ -6,8 +6,8 @@
         <div class="page-content-wrapper mt-3">
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-3">
-                        <div class="card shadow-sm">
+                    <div class="col-xl-4">
+                        <div class="card shadow-sm" onclick="location.href='{{ url('courses') }}'" style="cursor: pointer">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-2">
@@ -17,66 +17,50 @@
                                     </div>
                                     <div class="col-10">
                                         <a href="" class="text-primary ml-4 mt-1"
-                                            style="font-size: 18px;font-weight: bold;">Total Article</a>
+                                            style="font-size: 18px;font-weight: bold;">Total Mata Kuliah</a>
                                         <div class="text-dark ml-4" style="font-size: 28px;font-weight: bold;">
-                                            10</div>
+                                            {{ $count_courses }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-3">
+                    <div class="col-xl-4">
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-2">
                                         <a class="btn"
                                             style="font-size: 28px;margin: 10px 5px 10px 5px;background-color: #F2F3F7;"><i
-                                                class="fas fa-atom" style="color: #09227F;"></i></a>
+                                                class="fas fa-user-tie" style="color: #09227F;"></i></a>
                                     </div>
                                     <div class="col-10">
                                         <a href="" class="text-primary ml-4 mt-1"
-                                            style="font-size: 18px;font-weight: bold;">Total Event</a>
+                                            style="font-size: 18px;font-weight: bold;">Total Dosen</a>
                                         <div class="text-dark ml-4" style="font-size: 28px;font-weight: bold;">
-                                            20</div>
+                                            {{ $count_lecturers }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-3">
+                    <div class="col-xl-4">
                         <div class="card shadow-sm">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-2">
                                         <a class="btn"
                                             style="font-size: 28px;margin: 10px 5px 10px 5px;background-color: #F2F3F7;"><i
-                                                class="fas fa-user" style="color: #09227F;"></i></a>
+                                                class="fas fa-user-graduate" style="color: #09227F;"></i></a>
                                     </div>
                                     <div class="col-10">
                                         <a href="" class="text-primary ml-4 mt-1"
-                                            style="font-size: 18px;font-weight: bold;">Admin</a>
+                                            style="font-size: 18px;font-weight: bold;">Total Mahasiswa</a>
                                         <div class="text-dark ml-4" style="font-size: 28px;font-weight: bold;">
-                                            30</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-2">
-                                        <a class="btn"
-                                            style="font-size: 28px;margin: 10px 5px 10px 5px;background-color: #F2F3F7;"><i
-                                                class="fas fa-edit" style="color: #09227F;"></i></a>
-                                    </div>
-                                    <div class="col-10">
-                                        <a href="" class="text-primary ml-4 mt-1"
-                                            style="font-size: 18px;font-weight: bold;">Author</a>
-                                        <div class="text-dark ml-4" style="font-size: 28px;font-weight: bold;">
-                                            40</div>
+                                            {{ $count_students }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

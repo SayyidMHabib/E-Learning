@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\Courses;
 use Illuminate\Support\Facades\Route;
 
@@ -34,7 +35,10 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
     Route::get('/dashboard', function (Request $request) {
         return view('index', [
             'title' => 'Dashboard',
-            'active' => 'dashboard'
+            'active' => 'dashboard',
+            'count_courses' => Courses::all()->count(),
+            'count_lecturers' => User::where('level', 1)->count(),
+            'count_students' => User::where('level', 2)->count()
         ]);
     });
 
@@ -49,7 +53,14 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
         return view('materials', [
             'title' => 'Materi Kuliah',
             'active' => 'materials',
-            'courses' => Courses::where('lecturer_id', auth()->user()->id)->get()
+            'courses' => Courses::where('lecturer_id', auth()->user()->id)->get(),
+        ]);
+    });
+    Route::get('/assignments', function (Request $request) {
+        return view('assignments', [
+            'title' => 'Tugas Mata Kuliah',
+            'active' => 'assignments',
+            'courses' => Courses::where('lecturer_id', auth()->user()->id)->get(),
         ]);
     });
 
