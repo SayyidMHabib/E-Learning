@@ -2,11 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CoursesController;
-use App\Http\Controllers\Api\CourseStudentsController;
 use App\Http\Controllers\Api\MaterialsController;
-use App\Http\Controllers\FileController;
+use App\Http\Controllers\Api\CourseStudentsController;
+use App\Http\Controllers\Api\MaterialStudentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +41,7 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
     Route::delete('/courses/{courses}', [CoursesController::class, 'destroy']);
     Route::post('/mahasiswa_courses/{courses}', [CoursesController::class, 'mahasiswa_courses']);
 
-    // route mata kuliah dosen
+    // route materi kuliah dosen
     Route::get('/materials', [MaterialsController::class, 'index']);
     Route::post('/materials', [MaterialsController::class, 'store']);
     Route::post('/materials/{materials}/download', [MaterialsController::class, 'download']);
@@ -52,4 +53,7 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
     Route::get('/course_students', [CourseStudentsController::class, 'index']);
     Route::get('/add_course_students', [CourseStudentsController::class, 'show']);
     Route::post('/add_course_students', [CourseStudentsController::class, 'store']);
+
+    // route materi kuliah mahasiswa
+    Route::get('/materialstudents', [MaterialStudentsController::class, 'index']);
 });

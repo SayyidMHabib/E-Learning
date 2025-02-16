@@ -14,7 +14,6 @@ class CoursesController extends Controller
      */
     public function index()
     {
-        // $user_id = auth()->user()->id;
         $data = Courses::with('lecturer:id,name')->get();
         return response()->json($data);
     }

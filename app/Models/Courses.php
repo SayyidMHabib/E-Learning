@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Materials;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Courses extends Model
 {
@@ -23,5 +24,10 @@ class Courses extends Model
     public function students()
     {
         return $this->belongsToMany(User::class, 'course_students', 'course_id', 'student_id');
+    }
+
+    public function materials()
+    {
+        return $this->hasMany(Materials::class, 'course_id');
     }
 }

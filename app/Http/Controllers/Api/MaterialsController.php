@@ -15,7 +15,7 @@ class MaterialsController extends Controller
      */
     public function index()
     {
-        $data = Materials::all();
+        $data = Materials::with('courses:id,name')->get();
         return response()->json($data);
     }
 

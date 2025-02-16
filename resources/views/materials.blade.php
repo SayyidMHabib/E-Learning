@@ -85,37 +85,6 @@
         </div>
     </div>
 
-    {{-- modal mahasiswa course --}}
-    <div class="modal fade" id="mahasiswaCourse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Daftar Mahasiswa</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h5 class="my-4" id="subtitle">Mata Kuliah : <span id="name_matkul"></span></h5>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover table-striped" id="table-mahasiswa_courses"
-                                    width="100%" cellspacing="0">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn" style="border: 1px solid #DADCE0; border-radius: 8px;"
-                        data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         function drawTable() {
             if ($.fn.DataTable.isDataTable('#table-materials')) {
@@ -143,12 +112,17 @@
                         "class": "text-center"
                     },
                     {
+                        "title": "Mata Kuliah",
+                        "data": "courses.name"
+                    },
+                    {
                         "title": "Judul Materi Kuliah",
                         "data": "title"
                     },
                     {
                         "title": "Tanggal",
                         "data": "created_at",
+                        "class": "text-center",
                         "render": function(data, type, row, meta) {
                             if (data) {
                                 return moment(data).format('ll')

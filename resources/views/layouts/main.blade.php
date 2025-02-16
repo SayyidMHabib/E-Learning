@@ -243,6 +243,15 @@
                                     <span>Mata Kuliah</span>
                                 </a>
                             </li>
+
+                            <li class="{{ $active == 'material_students' ? 'mm-active' : '' }}">
+                                <a href="{{ url('/material_students') }}"
+                                    class="waves-effect menu-link {{ $active == 'material_students' ? 'active' : '' }}">
+                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-file-invoice"></i>
+                                    </div>
+                                    <span>Materi Kuliah</span>
+                                </a>
+                            </li>
                         @endif
 
 
