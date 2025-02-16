@@ -10,20 +10,20 @@
                     <div class="card-header bg-white">
                         <div class="row">
                             <div class="col-lg-6">
-                                <h4 class="mt-2" id="subtitle">Data Mata Kuliah</h4>
-                                <small>Berikut adalah data mata kuliah yang ada di dalam sistem.</small>
+                                <h4 class="mt-2" id="subtitle">Data Materi Kuliah</h4>
+                                <small>Berikut adalah data materi kuliah yang ada di dalam sistem.</small>
                             </div>
                             <div class="col-lg-6" id="btn_create">
-                                <button class="btn float-right" data-toggle="modal" data-target="#addCourse"
+                                <button class="btn float-right" data-toggle="modal" data-target="#addMateri"
                                     style="background: var(--main-bg-primary); color: #FFFFFF;border-radius: 8px;"><i
-                                        class="fas fa-plus mr-2"></i> Tambah Mata Kuliah</button>
+                                        class="fas fa-file-upload mr-2"></i> Tambah Materi Kuliah</button>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped" id="table-courses" width="100%"
-                                cellspacing="0">
+                            <table class="table table-bordered table-hover table-striped" id="table-materials"
+                                width="100%" cellspacing="0">
                             </table>
                         </div>
                     </div>
@@ -34,31 +34,43 @@
     </div>
 
     {{-- modal add course --}}
-    <div class="modal fade" id="addCourse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="addMateri" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Form Tambah Mata Kuliah</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Form Tambah Materi Kuliah</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="form_create_cource" enctype="multipart/form-data">
+                <form id="form_create_materi" enctype="multipart/form-data">
                     <div class="modal-body form">
                         <div class="row">
-                            <input type="hidden" name="id" id="crs_id">
+                            <input type="hidden" name="id" id="mtr_id">
                             <div class="col-lg-12 mb-3">
-                                <label for="crs_name" class="form-label">Nama Mata Kuliah <span
+                                <label for="mtr_course_id" class="form-label">Mata Kuliah <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="crs_name" name="name"
-                                    placeholder="Inputkan Nama Mata Kuliah" autocomplete="off" required>
-                                <span class="text-danger error-name"></span>
+                                <select class="form-control select2" name="course_id" id="mtr_course_id"
+                                    style="width: 100% !important;" required>
+                                    <option value="" disabled selected>Pilih Mata Kuliah</option>
+                                    @foreach ($courses as $course)
+                                        <option value="{{ $course->id }}">{{ $course->name }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="text-danger error-course_id"></span>
                             </div>
                             <div class="col-lg-12 mb-3">
-                                <label for="crs_description" class="form-label">Deskripsi <small>(optional)</small></label>
-                                <textarea name="description" id="crs_description" placeholder="Inputkan Deskripsi" class="form-control"></textarea>
-                                <span class="text-danger error-description"></span>
+                                <label for="mtr_title" class="form-label">Judul Materi Kuliah <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="mtr_title" name="title"
+                                    placeholder="Inputkan Nama Mata Kuliah" autocomplete="off" required>
+                                <span class="text-danger error-title"></span>
+                            </div>
+                            <div class="col-lg-12 mb-3">
+                                <label for="mtr_file_path" class="form-label">File Materi</label>
+                                <input class="form-control" type="file" id="mtr_file_path" name="file_path" required>
+                                <span class="text-danger error-file_path"></span>
                             </div>
                         </div>
                     </div>
@@ -106,16 +118,16 @@
 
     <script>
         function drawTable() {
-            if ($.fn.DataTable.isDataTable('#table-courses')) {
-                $('#table-courses').DataTable().clear().destroy();
+            if ($.fn.DataTable.isDataTable('#table-materials')) {
+                $('#table-materials').DataTable().clear().destroy();
             }
-            $('#table-courses').DataTable({
+            $('#table-materials').DataTable({
                 paging: true,
                 searching: true,
                 info: true,
                 responsive: true,
                 ajax: {
-                    url: 'api/courses',
+                    url: 'api/materials',
                     type: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + '{{ session('tkn') }}',
@@ -131,16 +143,19 @@
                         "class": "text-center"
                     },
                     {
-                        "title": "Nama Mata Kuliah",
-                        "data": "name"
+                        "title": "Judul Materi Kuliah",
+                        "data": "title"
                     },
                     {
-                        "title": "Deskripsi",
-                        "data": "description"
-                    },
-                    {
-                        "title": "Dosen",
-                        "data": "lecturer.name"
+                        "title": "Tanggal",
+                        "data": "created_at",
+                        "render": function(data, type, row, meta) {
+                            if (data) {
+                                return moment(data).format('ll')
+                            } else {
+                                return '-';
+                            }
+                        }
                     },
                     {
                         "title": "Aksi",
@@ -148,21 +163,14 @@
                         "width": "15%",
                         "class": "text-center",
                         "render": function(data, type, row) {
-                            if (row.lecturer_id == {{ session('id') }}) {
-                                return `
-                                        <a href="javascript:void(0)" onclick="edit_course(${row.id})" type="button" class="btn btn-sm btn-warning" title="Edit Data">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" onclick="delete_course(${row.id})" type="button" class="btn btn-sm btn-danger" title="Hapus Data">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                        <a href="javascript:void(0)" onclick="mahasiswa_course(${row.id})" type="button" class="btn btn-sm btn-primary" title="Daftar Mahasiswa">
-                                            <i class="fas fa-user-graduate"></i>
-                                        </a>
-                                        `;
-                            } else {
-                                return '';
-                            }
+                            return `
+                                    <a href="javascript:void(0)" onclick="delete_materi(${row.id})" type="button" class="btn btn-sm btn-danger" title="Hapus Data">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                    <a href="javascript:void(0)" onclick="unduh_materi(${row.id})" type="button" class="btn btn-sm btn-primary" title="Unduh Materi">
+                                        <i class="fas fa-file-download"></i>
+                                    </a>
+                                    `;
                         }
                     }
                 ],
@@ -176,26 +184,16 @@
             });
         }
 
-        $("#form_create_cource").submit(function(e) {
+        $("#form_create_materi").submit(function(e) {
             e.preventDefault();
-
-            let id = $('#crs_id').val();
-            let ajax_type = 'POST';
-            let ajax_url = 'api/courses';
-            let formData = new FormData(this);
-
-            if (id) {
-                ajax_url = 'api/courses/' + id;
-            }
-
             $.ajax({
-                type: ajax_type,
-                url: ajax_url,
+                type: 'POST',
+                url: 'api/materials',
                 headers: {
                     'Authorization': 'Bearer ' + '{{ session('tkn') }}',
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                data: formData,
+                data: new FormData(this),
                 processData: false,
                 contentType: false,
                 dataType: "json",
@@ -207,7 +205,7 @@
                             showConfirmButton: false,
                             timer: 1500,
                         }).then(() => {
-                            $('#addCourse').modal('hide');
+                            $('#addMateri').modal('hide');
                             drawTable();
                         });
                     } else {
@@ -227,30 +225,7 @@
             });
         });
 
-        function edit_course(id) {
-            event.preventDefault();
-            $.ajax({
-                type: "GET",
-                url: "api/courses/" + id,
-                headers: {
-                    'Authorization': 'Bearer ' + '{{ session('tkn') }}',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                dataType: "json",
-                success: function(data) {
-                    $("#crs_id").val(data.id);
-                    $("#crs_name").val(data.name);
-                    $("#crs_description").val(data.description);
-
-                    $('#addCourse').modal('show');
-                },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                }
-            });
-        }
-
-        function delete_course(id) {
+        function delete_materi(id) {
             Swal.fire({
                 title: 'Yakin hapus data ini?',
                 icon: 'error',
@@ -261,7 +236,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: 'api/courses/' + id,
+                        url: 'api/materials/' + id,
                         type: 'DELETE',
                         headers: {
                             'Authorization': 'Bearer ' + '{{ session('tkn') }}',
@@ -282,57 +257,19 @@
             });
         }
 
-        function mahasiswa_course(id) {
+        function unduh_materi(id) {
             event.preventDefault();
             $.ajax({
                 type: "POST",
-                url: "api/mahasiswa_courses/" + id,
+                url: "api/materials/" + id + "/download",
                 headers: {
                     'Authorization': 'Bearer ' + '{{ session('tkn') }}',
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 dataType: "json",
                 success: function(data) {
-                    $('#name_matkul').text(data.name);
-                    $('#mahasiswaCourse').modal('show');
-
-                    if ($.fn.DataTable.isDataTable('#table-mahasiswa_courses')) {
-                        $('#table-mahasiswa_courses').DataTable().clear().destroy();
-                    }
-                    $('#table-mahasiswa_courses').DataTable({
-                        paging: true,
-                        searching: true,
-                        info: true,
-                        responsive: true,
-                        data: data.students,
-                        "columns": [{
-                                "title": "No",
-                                "data": null
-                            },
-                            {
-                                "title": "Nama Mahasiswa",
-                                "data": "name"
-                            },
-                            {
-                                "title": "Aksi",
-                                "data": null,
-                                "render": function(data, type, row) {
-                                    return `
-                                        <a href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=${row.email}"  type="button" class="btn btn-sm btn-danger" target="_blank">
-                                            <i class="mdi mdi-gmail"></i>
-                                        </a>
-                                        `;
-                                }
-                            }
-                        ],
-                        "columnDefs": [{
-                            "targets": 0,
-                            "searchable": false,
-                            "render": function(data, type, row, meta) {
-                                return meta.row + 1;
-                            }
-                        }]
-                    });
+                    var fileParameter = encodeURIComponent(data.file);
+                    window.location.href = 'api/unduh?file=' + fileParameter;
                 },
                 error: function(xhr) {
                     console.log(xhr.responseText);

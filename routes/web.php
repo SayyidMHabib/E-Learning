@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Courses;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,10 +38,27 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
         ]);
     });
 
+    // route dosen
     Route::get('/courses', function (Request $request) {
         return view('courses', [
             'title' => 'Mata Kuliah',
             'active' => 'courses'
+        ]);
+    });
+    Route::get('/materials', function (Request $request) {
+        return view('materials', [
+            'title' => 'Materi Kuliah',
+            'active' => 'materials',
+            'courses' => Courses::where('lecturer_id', auth()->user()->id)->get()
+        ]);
+    });
+
+
+    //    route mahasiswa
+    Route::get('/course_students', function (Request $request) {
+        return view('course_students', [
+            'title' => 'Mata Kuliah',
+            'active' => 'course_students'
         ]);
     });
 });

@@ -98,4 +98,11 @@ class CoursesController extends Controller
             'message' => 'Data Mata Kuliah Berhasil Dihapus.',
         ]);
     }
+
+    public function mahasiswa_courses(Courses $courses)
+    {
+        // $data = $courses->load('students:id,name,email');
+        $data = Courses::with('students:id,name,email')->where('id', $courses->id)->select('id', 'name')->first();
+        return response()->json($data);
+    }
 }

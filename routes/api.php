@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CoursesController;
+use App\Http\Controllers\Api\CourseStudentsController;
+use App\Http\Controllers\Api\MaterialsController;
+use App\Http\Controllers\FileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,9 +28,28 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
         return $request->user();
     });
 
+    // route unduh file
+    Route::get('/unduh', [FileController::class, 'unduh']);
+
+    // Route Dosen
+    // route mata kuliah dosen
     Route::get('/courses', [CoursesController::class, 'index']);
     Route::post('/courses', [CoursesController::class, 'store']);
     Route::get('/courses/{courses}', [CoursesController::class, 'show']);
     Route::post('/courses/{courses}', [CoursesController::class, 'update']);
     Route::delete('/courses/{courses}', [CoursesController::class, 'destroy']);
+    Route::post('/mahasiswa_courses/{courses}', [CoursesController::class, 'mahasiswa_courses']);
+
+    // route mata kuliah dosen
+    Route::get('/materials', [MaterialsController::class, 'index']);
+    Route::post('/materials', [MaterialsController::class, 'store']);
+    Route::post('/materials/{materials}/download', [MaterialsController::class, 'download']);
+    Route::delete('/materials/{materials}', [MaterialsController::class, 'destroy']);
+
+
+    // Route Mahasiswa
+    // route mata kuliah mahasiswa
+    Route::get('/course_students', [CourseStudentsController::class, 'index']);
+    Route::get('/add_course_students', [CourseStudentsController::class, 'show']);
+    Route::post('/add_course_students', [CourseStudentsController::class, 'store']);
 });

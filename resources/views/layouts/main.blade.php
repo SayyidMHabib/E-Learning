@@ -40,8 +40,8 @@
     <!-- Summernote css -->
     <link href="{{ asset('libs/summernote/summernote-bs4.css') }}" rel="stylesheet" type="text/css" />
 
-    <!-- Select 2 -->
-    <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.css') }}">
+    <!-- Import Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
@@ -192,12 +192,6 @@
                             <a class="dropdown-item" href="#" id="btn_logout">
                                 <i class="mdi mdi-logout font-size-16 align-middle mr-1"></i> Logout
                             </a>
-
-                            <form id="logout-form" action="{{ url('/api/logout') }}" method="POST"
-                                style="display: none;">
-                                @csrf
-                            </form>
-
                         </div>
                     </div>
 
@@ -223,13 +217,35 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li class="{{ $active == 'courses' ? 'mm-active' : '' }}">
-                            <a href="{{ url('/courses') }}"
-                                class="waves-effect menu-link {{ $active == 'courses' ? 'active' : '' }}">
-                                <div class="d-inline-block icons-sm mr-1"><i class="fas fa-list-ul"></i></div>
-                                <span>Mata Kuliah</span>
-                            </a>
-                        </li>
+
+                        @if (session('level') == 1)
+                            <li class="{{ $active == 'courses' ? 'mm-active' : '' }}">
+                                <a href="{{ url('/courses') }}"
+                                    class="waves-effect menu-link {{ $active == 'courses' ? 'active' : '' }}">
+                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-list-ul"></i></div>
+                                    <span>Mata Kuliah</span>
+                                </a>
+                            </li>
+
+                            <li class="{{ $active == 'materials' ? 'mm-active' : '' }}">
+                                <a href="{{ url('/materials') }}"
+                                    class="waves-effect menu-link {{ $active == 'materials' ? 'active' : '' }}">
+                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-file-invoice"></i>
+                                    </div>
+                                    <span>Materi Kuliah</span>
+                                </a>
+                            </li>
+                        @elseif (session('level') == 2)
+                            <li class="{{ $active == 'course_students' ? 'mm-active' : '' }}">
+                                <a href="{{ url('/course_students') }}"
+                                    class="waves-effect menu-link {{ $active == 'course_students' ? 'active' : '' }}">
+                                    <div class="d-inline-block icons-sm mr-1"><i class="fas fa-list-ul"></i></div>
+                                    <span>Mata Kuliah</span>
+                                </a>
+                            </li>
+                        @endif
+
+
                     </ul>
                 </div>
                 <!-- Sidebar -->
@@ -318,8 +334,8 @@
     <!-- init js -->
     <script src="{{ asset('js/pages/summernote.init.js') }}"></script>
 
-    <!-- Select 2 -->
-    <script src="{{ asset('plugins/select2/js/select2.full.js') }}"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 
@@ -328,8 +344,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.1/dist/sweetalert2.all.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/id.min.js"></script>
+
     <script>
+        moment.locale('id');
         $(document).ready(function() {
+            $('.select2').select2();
             $(".alert-message").delay(2500).slideUp('slow');
         });
 
@@ -340,27 +361,32 @@
 
         $("#btn_logout").on('click', function(e) {
             e.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "api/logout",
-                processData: false,
-                contentType: false,
-                headers: {
-                    'Authorization': 'Bearer ' + '{{ session('tkn') }}',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                dataType: "json",
-                success: function(res) {
-                    if (res.success) {
-                        toastr.success(res.message);
-                        localStorage.removeItem('auth_user');
-                        setTimeout(() => {
+            Swal.fire({
+                title: 'Yakin keluar dari aplikasi?',
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes !!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "api/logout",
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'Authorization': 'Bearer ' + '{{ session('tkn') }}',
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                        success: function(res) {
                             location.href = 'login';
-                        }, 1000);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    toastr.error('Error! ' + errorThrown);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            toastr.error('Error! ' + errorThrown);
+                        }
+                    });
                 }
             });
         });
