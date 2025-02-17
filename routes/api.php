@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AssignmentsController;
+use App\Http\Controllers\Api\AssignmentStudentsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileController;
@@ -53,6 +54,7 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
     Route::post('/assignments', [AssignmentsController::class, 'store']);
     Route::delete('/assignments/{assignments}', [AssignmentsController::class, 'destroy']);
     Route::post('/assignments/{assignments}/submissions', [AssignmentsController::class, 'submissions_students']);
+    Route::post('/submissions/{submissions}/download', [AssignmentsController::class, 'download']);
 
 
     // Route Mahasiswa
@@ -63,4 +65,8 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
 
     // route materi kuliah mahasiswa
     Route::get('/materialstudents', [MaterialStudentsController::class, 'index']);
+
+    // route tugas kuliah mahasiswa
+    Route::get('/assignment_students', [AssignmentStudentsController::class, 'index']);
+    Route::post('/submission_students', [AssignmentStudentsController::class, 'store']);
 });

@@ -168,9 +168,24 @@
                         "class": "text-center",
                         "render": function(data, type, row, meta) {
                             if (data) {
-                                return moment(data).format('ll')
+                                var deadline = moment(data);
+                                var today = moment();
+                                var isLate = deadline.isBefore(today, 'day');
+
+                                return "<p style='font-weight: bold; " + (isLate ? "color: white;" : "") +
+                                    "'>" + moment(data).format('ll') + "</p>";
                             } else {
                                 return '-';
+                            }
+                        },
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            var deadline = moment(rowData.deadline);
+                            var today = moment();
+                            var isLate = deadline.isBefore(today, 'day');
+
+                            if (isLate) {
+                                $(td).css('background-color', '#d80032');
+                                $(td).css('color', 'white');
                             }
                         }
                     },
@@ -303,6 +318,18 @@
                             {
                                 "title": "Nama Mahasiswa",
                                 "data": "student.name"
+                            },
+                            {
+                                "title": "Tanggal",
+                                "data": "created_at",
+                                "class": "text-center",
+                                "render": function(data, type, row, meta) {
+                                    if (data) {
+                                        return moment(data).format('ll')
+                                    } else {
+                                        return '-';
+                                    }
+                                }
                             },
                             {
                                 "title": "Aksi",

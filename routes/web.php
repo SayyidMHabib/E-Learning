@@ -78,4 +78,10 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
             'active' => 'material_students'
         ]);
     });
+    Route::get('/assignment_students', function (Request $request) {
+        return view('assignment_students', [
+            'title' => 'Materi Kuliah',
+            'active' => 'assignment_students'
+        ]);
+    });
 });

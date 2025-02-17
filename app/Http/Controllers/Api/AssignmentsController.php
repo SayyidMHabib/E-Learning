@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Assignments;
+use App\Models\Submissions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Expr\Assign;
 
 class AssignmentsController extends Controller
 {
@@ -84,5 +84,35 @@ class AssignmentsController extends Controller
     {
         $data = $assignments->load(['submissions.student:id,name,email']);
         return response()->json($data);
+    }
+
+    public function download(Submissions $submissions)
+    {
+        $file = $submissions->file_path;
+
+        $passphrase = 's3cret-3-L34rn1ng';
+        $expiryTime = time() + (5);
+
+        $data = json_encode(array(
+            'file' => $file,
+            'expiry_time' => $expiryTime,
+        ));
+
+        $iv = openssl_random_pseudo_bytes(16);
+
+        $encryptedData = openssl_encrypt($data, 'aes-256-cbc', $passphrase, OPENSSL_RAW_DATA, $iv);
+        $link_file = base64_encode($iv . $encryptedData);
+
+        if ($encryptedData) {
+            return response()->json([
+                'success' => true,
+                'file' => $link_file,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi Kesalahan',
+            ], 400);
+        }
     }
 }
