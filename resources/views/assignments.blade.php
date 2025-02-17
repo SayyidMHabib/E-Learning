@@ -93,6 +93,37 @@
         </div>
     </div>
 
+    {{-- modal submission students --}}
+    <div class="modal fade" id="submissionStudents" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Daftar Tugas Mahasiswa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h5 class="my-4" id="subtitle">Tugas : <span id="name_assignment"></span></h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped"
+                                    id="table-submission_students" width="100%" cellspacing="0">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" style="border: 1px solid #DADCE0; border-radius: 8px;"
+                        data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function drawTable() {
             if ($.fn.DataTable.isDataTable('#table-assignments')) {
@@ -246,7 +277,65 @@
             event.preventDefault();
             $.ajax({
                 type: "POST",
-                url: "api/assignments/" + id + "/download",
+                url: "api/assignments/" + id + "/submissions",
+                headers: {
+                    'Authorization': 'Bearer ' + '{{ session('tkn') }}',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#name_assignment').text(data.title);
+                    $('#submissionStudents').modal('show');
+
+                    if ($.fn.DataTable.isDataTable('#table-submission_students')) {
+                        $('#table-submission_students').DataTable().clear().destroy();
+                    }
+                    $('#table-submission_students').DataTable({
+                        paging: true,
+                        searching: true,
+                        info: true,
+                        responsive: true,
+                        data: data.submissions,
+                        "columns": [{
+                                "title": "No",
+                                "data": null
+                            },
+                            {
+                                "title": "Nama Mahasiswa",
+                                "data": "student.name"
+                            },
+                            {
+                                "title": "Aksi",
+                                "data": null,
+                                "render": function(data, type, row) {
+                                    return `
+                                           <a href="javascript:void(0)" onclick="unduh_materi(${row.id})" type="button" class="btn btn-sm btn-primary" title="Unduh Materi">
+                                                <i class="fas fa-file-download"></i>
+                                            </a>
+                                            `;
+                                }
+                            }
+                        ],
+                        "columnDefs": [{
+                            "targets": 0,
+                            "searchable": false,
+                            "render": function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        }]
+                    });
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        function unduh_materi(id) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "api/submissions/" + id + "/download",
                 headers: {
                     'Authorization': 'Bearer ' + '{{ session('tkn') }}',
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

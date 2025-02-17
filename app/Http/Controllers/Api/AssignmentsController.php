@@ -54,7 +54,7 @@ class AssignmentsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Assignments $assignments)
     {
         //
     }
@@ -78,5 +78,11 @@ class AssignmentsController extends Controller
             'success' => true,
             'message' => 'Data Tugas Mata Kuliah Berhasil Dihapus.',
         ]);
+    }
+
+    public function submissions_students(Assignments $assignments)
+    {
+        $data = $assignments->load(['submissions.student:id,name,email']);
+        return response()->json($data);
     }
 }

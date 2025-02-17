@@ -52,6 +52,7 @@ Route::middleware(['auth:sanctum', 'update.last_used'])->group(function () {
     Route::get('/assignments', [AssignmentsController::class, 'index']);
     Route::post('/assignments', [AssignmentsController::class, 'store']);
     Route::delete('/assignments/{assignments}', [AssignmentsController::class, 'destroy']);
+    Route::post('/assignments/{assignments}/submissions', [AssignmentsController::class, 'submissions_students']);
 
 
     // Route Mahasiswa

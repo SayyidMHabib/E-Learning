@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Courses;
+use App\Models\Submissions;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,5 +54,10 @@ class User extends Authenticatable
     public function course_students()
     {
         return $this->belongsToMany(Course::class, 'course_students', 'student_id', 'course_id');
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(Submissions::class, 'student_id');
     }
 }
